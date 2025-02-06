@@ -1,12 +1,12 @@
 // script.js
-const apiKey = '7nZykbNhCkkTYJGLZLWPYFZVrOM4gdQBm5hb3Fpar2U';
+const apiKey = '48685015-6081aca7eb1cbdbbed2ea6620';
 const slideshow = document.getElementById('background-slideshow');
 let currentImageIndex = 0;
 
 async function loadImages() {
-    const response = await fetch(`https://api.unsplash.com/photos/random?count=10&query=landscape,travel&client_id=${apiKey}`);
-    const images = await response.json();
-    return images.map(img => img.urls.regular);
+    const response = await fetch(`https://pixabay.com/api/?key=${apiKey}&q=landscape&image_type=photo&per_page=10`);
+    const data = await response.json();
+    return data.hits.map(img => img.largeImageURL);
 }
 
 async function startSlideshow() {
