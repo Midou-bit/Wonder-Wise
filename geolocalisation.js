@@ -1,14 +1,28 @@
 function getLocation() {
     if ("geolocation" in navigator) {
-        // Afficher une boîte de dialogue pour informer l'utilisateur
         if (confirm("Voulez-vous autoriser l'accès à votre position ?")) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     console.log("✅ Position détectée !");
-                    document.getElementById("output").innerHTML = 
-                        `🌍 Latitude : ${position.coords.latitude}<br>
-                         📍 Longitude : ${position.coords.longitude}<br>
-                         📏 Précision : ${position.coords.accuracy} mètres`;
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+                    const accuracy = position.coords.accuracy;
+
+                    // Appel à l'API de géocodage inverse de Nominatim
+                    fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            const country = data.address.country || "Non disponible";
+                            document.getElementById("output").innerHTML = 
+                                `🌍 Latitude : ${latitude}<br>
+                                 📍 Longitude : ${longitude}<br>
+                                 📏 Précision : ${accuracy} mètres<br>
+                                 🏳️ Pays : ${country}`;
+                        })
+                        .catch(error => {
+                            console.error("❌ Erreur lors de la récupération du pays :", error);
+                            document.getElementById("output").innerHTML = "❌ Erreur lors de la récupération du pays.";
+                        });
                 },
                 (error) => {
                     let message = "";
