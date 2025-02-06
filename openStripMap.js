@@ -1,70 +1,115 @@
-// openTripMap.js
+document.getElementById('searchButton').addEventListener('click', () => {
+    const userInput = document.getElementById('destinationInput').value;
+    console.log("Message utilisateur reçu :", userInput);
+    handleUserMessage(userInput);
+});
 
-const API_KEY = '5ae2e3f221c38a28845f05b62ef3b52b63cee12bf745621e2455c25a';
-const BASE_URL = 'https://api.opentripmap.com/0.1/en/places';
 
-async function getActivities(country, isForChildren = false) {
-  try {
-    // Récupérer les coordonnées du pays
-    const geoResponse = await fetch(`${BASE_URL}/geoname?name=${country}&apikey=${API_KEY}`);
-    const geoData = await geoResponse.json();
-    
-    if (!geoData.lat || !geoData.lon) {
-      throw new Error("Pays non trouvé");
+const countryCities = {
+    "france": ["Paris", "Lyon", "Marseille", "Bordeaux", "Toulouse", "Nice"],
+    "italie": ["Rome", "Milan", "Venise", "Florence"],
+    "espagne": ["Madrid", "Barcelone", "Séville"],
+    "allemagne": ["Berlin", "Munich", "Hambourg"]
+};
+
+
+const corrections = {
+    "paris": "Paris", "lyon": "Lyon", "marseil": "Marseille",
+    "bordaux": "Bordeaux", "toulous": "Toulouse", "londres": "Londres",
+    "france": "France", "italie": "Italie", "espagne": "Espagne"
+};
+
+
+function handleUserMessage(message) {
+    const chatMessages = document.getElementById('chatMessages');
+    chatMessages.innerHTML += `<div class="message user-message"><p>${message}</p></div>`;
+
+    let location = extractLocation(message);
+    if (location) {
+        chatMessages.innerHTML += `<div class="message bot-message"><p>🔍 Je cherche des activités à <strong>${location}</strong>...</p></div>`;
+        getOSMActivities(location).then(activities => {
+            activities.length > 0 ? displayActivities(activities) : suggestQuestions(location);
+        }).catch(error => {
+            console.error("Erreur API :", error);
+            chatMessages.innerHTML += `<div class="message bot-message"><p>⚠ Erreur, réessaie plus tard.</p></div>`;
+        });
+    } else {
+        suggestGeneralQuestions();
     }
-
-    // Récupérer les activités autour de ces coordonnées
-    const radius = 1000000; // 1000 km
-    const limit = 50; // Nombre d'activités à récupérer
-    const activitiesResponse = await fetch(`${BASE_URL}/radius?radius=${radius}&lon=${geoData.lon}&lat=${geoData.lat}&limit=${limit}&apikey=${API_KEY}`);
-    const activitiesData = await activitiesResponse.json();
-
-    // Filtrer les activités pour les enfants si nécessaire
-    const filteredActivities = isForChildren 
-    ? activitiesData.features.filter(activity => 
-        activity.properties.kinds.includes('amusements') || 
-        activity.properties.kinds.includes('museums') ||
-        activity.properties.kinds.includes('zoos') ||
-        activity.properties.kinds.includes('beaches') ||
-        activity.properties.kinds.includes('aquariums') ||
-        activity.properties.kinds.includes('water_parks') ||
-        activity.properties.kinds.includes('theme_parks') ||
-        activity.properties.kinds.includes('playgrounds') ||
-        activity.properties.kinds.includes('natural_attractions')
-      )
-    : activitiesData.features;
-      
-    return filteredActivities.map(activity => ({
-      name: activity.properties.name,
-      type: activity.properties.kinds,
-      coordinates: activity.geometry.coordinates
-    }));
-  } catch (error) {
-    console.error("Erreur lors de la récupération des activités:", error);
-    return [];
-  }
 }
 
-function displayActivities(activities) {
-    const chatMessages = document.querySelector('.chat-messages');
-    const messageElement = document.createElement('div');
-    messageElement.classList.add('message', 'bot-message');
-    
-    if (activities.length === 0) {
-      messageElement.innerHTML = "Oh non ! 😔 Je n'ai pas trouvé d'activités pour cette destination. Mais ne vous découragez pas, essayons une autre recherche ensemble ! Que diriez-vous d'explorer un autre endroit magique ? 🌟";
-    } else {
-      const activitiesList = activities.map(activity => `<li>🎉 ${activity.name} (${activity.type})</li>`).join('');
-      messageElement.innerHTML = `
-        <p>Youhou ! 🎊 J'ai trouvé des activités incroyables pour vous !</p>
-        <p>Préparez-vous à vivre des aventures extraordinaires :</p>
-        <ul>${activitiesList}</ul>
-        <p>N'hésitez pas à me demander plus de détails sur ces activités passionnantes ! 😊</p>
-      `;
-    }
-    
-    chatMessages.appendChild(messageElement);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-  }  
+function extractLocation(message) {
+    let match = message.match(/(?:à|en)\s([a-zA-ZÀ-ÿ\s]+)/i);
+    let location = match ? match[1].trim().toLowerCase().replace("en ", "") : null;
+    if (location && corrections[location]) location = corrections[location]; // Corrige les fautes
+    if (location && countryCities[location]) location = countryCities[location][Math.floor(Math.random() * countryCities[location].length)]; // Prend une ville
+    return location;
+}
 
-// Exporter les fonctions pour les utiliser dans script.js
-export { getActivities, displayActivities };
+async function getOSMActivities(location) {
+    try {
+        const geoData = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`).then(res => res.json());
+        if (!geoData.length) return [];
+
+        const { lat, lon } = geoData[0];
+        const osmData = await fetch(`https://overpass-api.de/api/interpreter?data=${encodeURIComponent(`[out:json];node(around:20000,${lat},${lon})["tourism"];out;`)}`).then(res => res.json());
+        
+        return osmData.elements?.filter(a => a.tags.name).slice(0, 10).map(a => ({
+            name: a.tags.name, type: formatActivityType(a.tags.tourism),
+            coordinates: `${a.lat}, ${a.lon}`, mapLink: `https://www.google.com/maps?q=${a.lat},${a.lon}`
+        })) || [];
+    } catch (error) {
+        console.error("Erreur API :", error);
+        return [];
+    }
+}
+
+
+function formatActivityType(type) {
+    return {
+        "museum": "Musée 🏛", "theme_park": "Parc à thème 🎢",
+        "zoo": "Zoo 🦁", "aquarium": "Aquarium 🐠",
+        "gallery": "Galerie d'art 🎨", "park": "Parc 🌳",
+        "attraction": "Attraction 🎡", "viewpoint": "Point de vue 🔭",
+        "information": "Point info ℹ️"
+    }[type] || "Lieu touristique 📍";
+}
+
+
+function displayActivities(activities) {
+    const chatMessages = document.getElementById('chatMessages');
+    chatMessages.innerHTML += `<div class="message bot-message"><p>🌍 Voici des activités :</p></div>` + 
+        activities.map(a => `
+            <div class="message bot-message" style="background: #e0f7fa; padding: 10px; border-radius: 10px; margin-bottom: 10px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
+                <p><strong>📍 ${a.name}</strong></p>
+                <p><b>Type :</b> ${a.type}</p>
+                <p><b>📍 Coordonnées :</b> ${a.coordinates}</p>
+                <p><a href="${a.mapLink}" target="_blank" style="color: blue; text-decoration: underline;">📍 Voir sur Google Maps</a></p>
+            </div>`).join("");
+}
+
+
+function suggestQuestions(location) {
+    document.getElementById('chatMessages').innerHTML += `
+        <div class="message bot-message">
+            <p>😕 Je n'ai pas trouvé d'activités à <strong>${location}</strong>, mais tu peux essayer :</p>
+            <ul>
+                <li>📍 "Quels sont les musées à ${location} ?" 🏛</li>
+                <li>🌳 "Quels sont les parcs à ${location} ?" 🌿</li>
+                <li>🎡 "Quelles attractions visiter à ${location} ?" 🎢</li>
+            </ul>
+        </div>`;
+}
+
+
+function suggestGeneralQuestions() {
+    document.getElementById('chatMessages').innerHTML += `
+        <div class="message bot-message">
+            <p>🤔 Je ne peux répondre qu'aux questions sur les activités touristiques. Essaye :</p>
+            <ul>
+                <li>📍 "Que faire à Paris ?" 🏛</li>
+                <li>🌿 "Quels sont les lieux touristiques en France ?" 📍</li>
+                <li>🎢 "Quels sont les meilleurs parcs à visiter ?" 🎡</li>
+            </ul>
+        </div>`;
+}
