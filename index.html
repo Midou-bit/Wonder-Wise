@@ -1,12 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Test API OpenTripMap</title>
 </head>
 <body>
-    <script src="script.js"></script>
+    <h1>Test API OpenTripMap</h1>
+    <p>Ouvrez la console du navigateur pour voir les résultats des tests.</p>
+
+    <script type="module">
+        import { getActivities, displayActivities } from './openTripMap.js';
+
+        async function testAPI() {
+            console.log('Test de l\'API OpenTripMap :');
+            
+            const countries = ['France', 'Spain', 'InvalidCountry', 'Côte d\'Ivoire', ''];
+            for (let country of countries) {
+                console.log(`Recherche d'activités pour : ${country}`);
+                const activities = await getActivities(country);
+                console.log(activities);
+                displayActivities(activities);
+            }
+
+            console.log('Test des activités pour enfants en Espagne :');
+            const childActivities = await getActivities('Spain', true);
+            console.log(childActivities);
+            displayActivities(childActivities);
+        }
+
+        testAPI();
+    </script>
 </body>
 </html>
