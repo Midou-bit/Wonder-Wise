@@ -24,6 +24,7 @@ function handleUserMessage(message) {
     const chatMessages = document.getElementById('chatMessages');
     chatMessages.innerHTML += `<div class="message user-message"><p>${message}</p></div>`;
 
+    
     let location = extractLocation(message);
     if (location) {
         chatMessages.innerHTML += `<div class="message bot-message"><p>🔍 Je cherche des activités à <strong>${location}</strong>...</p></div>`;
