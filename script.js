@@ -28,7 +28,7 @@ async function startSlideshow() {
     }
 
     showNextImage();
-    setInterval(showNextImage, 10000); // Change d'image toutes les 10 secondes
+    setInterval(showNextImage, 10000);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -36,7 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatbotInterface = document.querySelector('.chatbot-interface');
     let isOpen = false;
 
-    // Animation du chatbot
     chatbotTrigger.addEventListener('click', () => {
         isOpen = !isOpen;
         chatbotInterface.classList.toggle('active');
@@ -45,11 +44,9 @@ document.addEventListener('DOMContentLoaded', () => {
             'scale(1) rotate(0deg)';
     });
 
-    // Animation des blobs
     document.querySelectorAll('.blob').forEach(blob => {
         blob.style.animationDelay = `${Math.random() * 20}s`;
     });
 
-    // Démarrage du diaporama
     startSlideshow();
 });

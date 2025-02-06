@@ -33,16 +33,12 @@
                 </div>
             </div>
             <div class="chat-search">
-                <input type="text" placeholder="Où voulez-vous aller ?" class="search-input">
-                <button class="search-button">
+                <input type="text" id="destinationInput" placeholder="Où voulez-vous aller ?" class="search-input">
+                <button id="searchButton" class="search-button">
                     <i class="fas fa-search-location"></i>
                 </button>
             </div>
-            <div class="chat-messages">
-                <div class="message bot-message">
-                    <p>Bonjour ! Je suis WanderWise, votre guide de voyage intelligent. 🌍</p>
-                </div>
-            </div>
+            <div id="chatMessages" class="chat-messages"></div>
         </div>
         
         <div class="chatbot-trigger">
@@ -51,5 +47,6 @@
     </div>
 
     <script src="script.js"></script>
+    <script src="openStripMap.js"></script>
 </body>
 </html>
