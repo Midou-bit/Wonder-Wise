@@ -1,26 +1,30 @@
-const API_KEY = "bb85921bd3fc41629e97259f175b36f7";
-const CITY = "Paris";
-const COUNTRY = "FR";
-const url = `https://api.weatherbit.io/v2.0/forecast/daily?city=${CITY}&country=${COUNTRY}&key=${API_KEY}`;
+const API_KEY = "4007c679fc3785d4c42214fc128c8f0a"; 
 
-async function getWeatherForecast() {
-  try {
-    const response = await fetch(url);
-    const forecastData = await response.json();
+async function getWeatherByCity() {
+    const city = document.getElementById("cityInput").value.trim();
+    if (!city) {
+        alert("❌ Veuillez entrer une ville !");
+        return;
+    }
 
-    const weatherDiv = document.getElementById("weather");
-    weatherDiv.innerHTML = `<h2>Prévisions pour ${CITY}, ${COUNTRY}:</h2>`;
-    forecastData.data.forEach((day) => {
-      weatherDiv.innerHTML += `<p>Date: ${day.valid_date}, Température: ${day.temp}°C, Description: ${day.weather.description}</p>`;
-    });
-  } catch (error) {
-    console.error(
-      "Erreur lors de la récupération des données météo:",
-      error.message
-    );
-  }
+    document.getElementById("weatherResult").innerHTML = "⏳ Chargement...";
+
+    try {
+        
+        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric&lang=fr`);
+        const data = await response.json();
+
+        if (data.cod === 200) {
+            document.getElementById("weatherResult").innerHTML = `
+                🌡️ Température : ${data.main.temp}°C<br>
+                🌤️ Météo : ${data.weather[0].description}<br>
+                💨 Vent : ${data.wind.speed} m/s<br>
+                🏙️ Ville : ${data.name}, ${data.sys.country}`;
+        } else {
+            document.getElementById("weatherResult").innerHTML = "❌ Ville introuvable.";
+        }
+    } catch (error) {
+        console.error("❌ Erreur lors de la récupération de la météo :", error);
+        document.getElementById("weatherResult").innerHTML = "❌ Une erreur est survenue.";
+    }
 }
-
-getWeatherForecast();
-
-// Api : https://www.weatherbit.io/api 
