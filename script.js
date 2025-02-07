@@ -35,18 +35,30 @@ async function startSlideshow() {
 document.addEventListener('DOMContentLoaded', () => {
     const chatbotTrigger = document.querySelector('.chatbot-trigger');
     const chatbotInterface = document.querySelector('.chatbot-interface');
-    let isOpen = true; // Le chatbot s'affiche par défaut
+    let isOpen = true; // Le chatbot est affiché par défaut
 
-    // Afficher le chatbot dès le chargement de la page avec un fondu plus doux
+    // Afficher le chatbot dès le chargement de la page avec une animation fluide
     setTimeout(() => {
         chatbotInterface.classList.add('active');
         chatbotTrigger.classList.add('active'); // Change l'apparence du bouton
-    }, 700); // Délai légèrement augmenté pour plus de fluidité
+    }, 700);
 
-    chatbotTrigger.addEventListener('click', () => {
+    // Fonction pour basculer l'affichage du chatbot
+    function toggleChatbot() {
         isOpen = !isOpen;
         chatbotInterface.classList.toggle('active', isOpen);
         chatbotTrigger.classList.toggle('active', isOpen);
+    }
+
+    // Événement pour ouvrir/fermer le chatbot en cliquant sur la boussole
+    chatbotTrigger.addEventListener('click', toggleChatbot);
+
+    // Événement pour fermer le chatbot si on clique en dehors
+    document.addEventListener('click', (event) => {
+        // Vérifie si le clic est à l'extérieur du chatbot et du bouton boussole
+        if (isOpen && !chatbotInterface.contains(event.target) && !chatbotTrigger.contains(event.target)) {
+            toggleChatbot();
+        }
     });
 
     document.querySelectorAll('.blob').forEach(blob => {
