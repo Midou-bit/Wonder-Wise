@@ -32,33 +32,6 @@ async function startSlideshow() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const chatbotTrigger = document.querySelector('.chatbot-trigger');
-    const chatbotInterface = document.querySelector('.chatbot-interface');
-    let isOpen = false;
-
-    chatbotTrigger.addEventListener('click', () => {
-        isOpen = !isOpen;
-        chatbotInterface.classList.toggle('active');
-        chatbotTrigger.style.transform = isOpen ? 
-            'scale(1.1) rotate(135deg)' : 
-            'scale(1) rotate(0deg)';
-    });
-
-    document.querySelectorAll('.blob').forEach(blob => {
-        blob.style.animationDelay = `${Math.random() * 20}s`;
-    });
-
-    startSlideshow();
-
-    // Ajout du message de bienvenue
-    const chatMessages = document.getElementById('chatMessages');
-    chatMessages.innerHTML = `
-        <div class="message bot-message">
-            <p>Bonjour ! Je suis WanderWise, votre guide de voyage intelligent. 🌎</p>
-        </div>
-    `;
-
-    // Nouvelles fonctionnalités pour le bouton météo
     const weatherButton = document.getElementById('weather-button');
     const weatherChatbot = document.getElementById('weather-chatbot');
     const closeButton = weatherChatbot.querySelector('.close-button');
@@ -103,5 +76,17 @@ document.addEventListener('DOMContentLoaded', () => {
     closeButton.addEventListener('click', function() {
         weatherChatbot.style.display = 'none';
         stopMessageCycle();
+    });
+
+    // 💡 Fermer le chatbot météo en cliquant à l'extérieur
+    document.addEventListener('click', function(event) {
+        if (
+            weatherChatbot.style.display === 'block' && // Vérifie s'il est ouvert
+            !weatherChatbot.contains(event.target) && // Vérifie si le clic n'est pas à l'intérieur
+            !weatherButton.contains(event.target) // Vérifie si le clic n'est pas sur le bouton nuage
+        ) {
+            weatherChatbot.style.display = 'none';
+            stopMessageCycle();
+        }
     });
 });
