@@ -12,7 +12,6 @@ const countryCities = {
     "allemagne": ["Berlin", "Munich", "Hambourg"]
 };
 
-
 const corrections = {
     "paris": "Paris", "lyon": "Lyon", "marseil": "Marseille",
     "bordaux": "Bordeaux", "toulous": "Toulouse", "londres": "Londres",
@@ -24,21 +23,42 @@ function handleUserMessage(message) {
     const chatMessages = document.getElementById('chatMessages');
     chatMessages.innerHTML += `<div class="message user-message"><p>${message}</p></div>`;
 
-
-    let location = extractLocation(message);
-    if (location) {
+    let pays = extractLocation(message);
+    console.log(pays);
+    
+    if (pays) {
         if(chatMessages.innerHTML){
             chatMessages.innerHTML = "";
         }
-        chatMessages.innerHTML += `<div class="message bot-message"><p>🔍 Je cherche des activités à <strong>${location}</strong>...</p></div>`;
-        getOSMActivities(location).then(activities => {
-            activities.length > 0 ? displayActivities(activities) : suggestQuestions(location);
+        chatMessages.innerHTML += `<div class="message bot-message"><p>🔍 Je cherche des activités dans la capitale de <strong>${pays}</strong>...</p></div>`;
+        getCountryCapital(pays).then(capital => {
+            if (capital) {
+                getOSMActivities(capital).then(activities => {
+                    activities.length > 0 ? displayActivities(activities) : suggestQuestions(capital);
+                }).catch(error => {
+                    console.error("Erreur API :", error);
+                    chatMessages.innerHTML += `<div class="message bot-message"><p>⚠ Erreur, réessaie plus tard.</p></div>`;
+                });
+            } else {
+                chatMessages.innerHTML += `<div class="message bot-message"><p>⚠ La capitale n'a pas été trouvée pour le pays ${pays}.</p></div>`;
+            }
         }).catch(error => {
-            console.error("Erreur API :", error);
+            console.error("Erreur lors de la récupération de la capitale :", error);
             chatMessages.innerHTML += `<div class="message bot-message"><p>⚠ Erreur, réessaie plus tard.</p></div>`;
         });
     } else {
         suggestGeneralQuestions();
+    }
+}
+async function getCountryCapital(country) {
+    try {
+        const response = await fetch(`http://localhost:3000/pays/${encodeURIComponent(country)}`);
+        if (!response.ok) throw new Error('Pays non trouvé');
+        const data = await response.json();
+        return data.capitale;
+    } catch (error) {
+        console.error("Erreur lors de la récupération de la capitale :", error);
+        return null;
     }
 }
 

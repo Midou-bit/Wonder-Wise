@@ -1,8 +1,12 @@
 const express = require("express");
 const axios = require("axios");
+const cors = require("cors");
 
 const app = express();
 const PORT = 3000;
+
+// Utiliser cors pour toutes les routes
+app.use(cors()); 
 
 // Fonction pour supprimer les accents (ex: "Algérie" devient "Algerie")
 function removeAccents(str) {
