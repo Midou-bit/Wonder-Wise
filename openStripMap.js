@@ -96,7 +96,7 @@ function formatActivityType(type) {
         "gallery": "Galerie d'art 🎨", "park": "Parc 🌳",
         "attraction": "Attraction 🎡", "viewpoint": "Point de vue 🔭",
         "information": "Point info ℹ️"
-    }[type] || "Lieu touristique 📍";
+    }[type] || "Lieu touristique ";
 }
 
 
