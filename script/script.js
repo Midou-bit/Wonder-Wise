@@ -97,13 +97,27 @@ document.addEventListener('DOMContentLoaded', () => {
         clearInterval(messageInterval);
     }
 
+    // ✅ Ouvrir le chatbot météo
     weatherButton.addEventListener('click', function() {
         weatherChatbot.style.display = 'block';
         startMessageCycle();
     });
 
+    // ✅ Fermer avec le bouton "X"
     closeButton.addEventListener('click', function() {
         weatherChatbot.style.display = 'none';
         stopMessageCycle();
+    });
+
+    // ✅ Fermer en cliquant à l'extérieur
+    document.addEventListener('click', function(event) {
+        if (
+            weatherChatbot.style.display === 'block' && // Vérifie si le chatbot météo est ouvert
+            !weatherChatbot.contains(event.target) && // Vérifie si le clic n'est pas à l'intérieur
+            !weatherButton.contains(event.target) // Vérifie si le clic n'est pas sur le bouton nuage
+        ) {
+            weatherChatbot.style.display = 'none';
+            stopMessageCycle();
+        }
     });
 });
