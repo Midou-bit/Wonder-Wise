@@ -1,14 +1,15 @@
-// script.js
 const apiKey = '48685015-6081aca7eb1cbdbbed2ea6620';
 const slideshow = document.getElementById('background-slideshow');
 let currentImageIndex = 0;
 
+// Fonction pour charger les images d'arrière-plan
 async function loadImages() {
     const response = await fetch(`https://pixabay.com/api/?key=${apiKey}&q=landscape&image_type=photo&per_page=10`);
     const data = await response.json();
     return data.hits.map(img => img.largeImageURL);
 }
 
+// Fonction pour démarrer le diaporama d'images en arrière-plan
 async function startSlideshow() {
     const imageUrls = await loadImages();
     
@@ -32,6 +33,33 @@ async function startSlideshow() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    const chatbotTrigger = document.querySelector('.chatbot-trigger');
+    const chatbotInterface = document.querySelector('.chatbot-interface');
+    let isOpen = false;
+
+    chatbotTrigger.addEventListener('click', () => {
+        isOpen = !isOpen;
+        chatbotInterface.classList.toggle('active');
+        chatbotTrigger.style.transform = isOpen ? 
+            'scale(1.1) rotate(135deg)' : 
+            'scale(1) rotate(0deg)';
+    });
+
+    document.querySelectorAll('.blob').forEach(blob => {
+        blob.style.animationDelay = `${Math.random() * 20}s`;
+    });
+
+    startSlideshow();
+
+    // Ajout du message de bienvenue
+    const chatMessages = document.getElementById('chatMessages');
+    chatMessages.innerHTML = `
+        <div class="message bot-message">
+            <p>Bonjour ! Je suis WanderWise, votre guide de voyage intelligent. 🌎</p>
+        </div>
+    `;
+
+    // 🌤 Gestion du chatbot météo
     const weatherButton = document.getElementById('weather-button');
     const weatherChatbot = document.getElementById('weather-chatbot');
     const closeButton = weatherChatbot.querySelector('.close-button');
@@ -68,20 +96,22 @@ document.addEventListener('DOMContentLoaded', () => {
         clearInterval(messageInterval);
     }
 
+    // ✅ Ouvrir le chatbot météo
     weatherButton.addEventListener('click', function() {
         weatherChatbot.style.display = 'block';
         startMessageCycle();
     });
 
+    // ✅ Fermer avec le bouton "X"
     closeButton.addEventListener('click', function() {
         weatherChatbot.style.display = 'none';
         stopMessageCycle();
     });
 
-    // 💡 Fermer le chatbot météo en cliquant à l'extérieur
+    // ✅ Fermer en cliquant à l'extérieur
     document.addEventListener('click', function(event) {
         if (
-            weatherChatbot.style.display === 'block' && // Vérifie s'il est ouvert
+            weatherChatbot.style.display === 'block' && // Vérifie si le chatbot météo est ouvert
             !weatherChatbot.contains(event.target) && // Vérifie si le clic n'est pas à l'intérieur
             !weatherButton.contains(event.target) // Vérifie si le clic n'est pas sur le bouton nuage
         ) {
