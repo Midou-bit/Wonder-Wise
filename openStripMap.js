@@ -102,44 +102,67 @@ function formatActivityType(type) {
 
 function displayActivities(activities) {
     const chatMessages = document.getElementById('chatMessages');
-    if(chatMessages){
-        chatMessages.innerHTML = "";
-    }
-    chatMessages.innerHTML += `<div class="message bot-message"><p>🌍 Voici des activités :</p></div>` + 
-        activities.map(a => `
-            <div class="message bot-message" style="background: #e0f7fa; padding: 10px; border-radius: 10px; margin-bottom: 10px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
+
+    const messages = [
+        `<div class="message bot-message"><p>🌍 Voici quelques activités intéressantes :</p></div>`,
+        ...activities.map(a => `
+            <div class="message bot-message">
                 <p><strong>📍 ${a.name}</strong></p>
                 <p><b>Type :</b> ${a.type}</p>
-                <p><b>📍 Coordonnées :</b> ${a.coordinates}</p>
-                <p><a href="${a.mapLink}" target="_blank" style="color: blue; text-decoration: underline;">📍 Voir sur Google Maps</a></p>
-            </div>`).join("");
+                <a href="${a.mapLink}" target="_blank">📍 Voir sur Google Maps</a>
+            </div>
+        `)
+    ];
+
+    addMessageWithDelay(chatMessages, messages, 600);
 }
+
+
+
+function addMessageWithDelay(container, messages, delay = 600) {
+    let isUserAtBottom = () => {
+        return container.scrollHeight - container.scrollTop <= container.clientHeight + 10;
+    };
+
+    messages.forEach((msg, index) => {
+        setTimeout(() => {
+            const messageElement = document.createElement("div");
+            messageElement.innerHTML = msg;
+            messageElement.classList.add("message");
+
+            container.appendChild(messageElement);
+
+            // Ne force le scroll en bas que si l'utilisateur est déjà en bas
+            if (isUserAtBottom()) {
+                container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
+            }
+        }, index * delay);
+    });
+}
+
+
 
 
 function suggestQuestions(location) {
-    document.getElementById('chatMessages').innerHTML += `
-        <div class="message bot-message">
-            <p>😕 Je n'ai pas trouvé d'activités à <strong>${location}</strong>, mais tu peux essayer :</p>
-            <ul>
-                <li>📍 "Quels sont les musées à ${location} ?" 🏛</li>
-                <li>🌳 "Quels sont les parcs à ${location} ?" 🌿</li>
-                <li>🎡 "Quelles attractions visiter à ${location} ?" 🎢</li>
-            </ul>
-        </div>`;
+    const chatMessages = document.getElementById('chatMessages');
+    const messages = [
+        `<div class="message bot-message"><p>😕 Je n'ai pas trouvé d'activités à <strong>${location}</strong>, mais tu peux essayer :</p></div>`,
+        `<div class="message bot-message"><p>📍 "Quels sont les musées à ${location} ?" 🏛</p></div>`,
+        `<div class="message bot-message"><p>🌳 "Quels sont les parcs à ${location} ?" 🌿</p></div>`,
+        `<div class="message bot-message"><p>🎡 "Quelles attractions visiter à ${location} ?" 🎢</p></div>`
+    ];
+
+    addMessageWithDelay(chatMessages, messages, 600);
 }
 
-
 function suggestGeneralQuestions() {
-    if(document.getElementById('chatMessages').innerHTML){
-        document.getElementById('chatMessages').innerHTML = "";
-    }
-    document.getElementById('chatMessages').innerHTML += `
-        <div class="message bot-message">
-            <p>🤔 Je ne peux répondre qu'aux questions sur les activités touristiques. Essaye :</p>
-            <ul>
-                <li>📍 "Que faire à Paris ?" 🏛</li>
-                <li>🌿 "Quels sont les lieux touristiques en France ?" 📍</li>
-                <li>🎢 "Quels sont les meilleurs parcs à visiter ?" 🎡</li>
-            </ul>
-        </div>`;
+    const chatMessages = document.getElementById('chatMessages');
+    const messages = [
+        `<div class="message bot-message"><p>🤔 Je peux t'aider à trouver des activités ! Essaye :</p></div>`,
+        `<div class="message bot-message"><p>📍 "Que faire à Paris ?" 🏛</p></div>`,
+        `<div class="message bot-message"><p>🌿 "Quels sont les lieux touristiques en France ?" 📍</p></div>`,
+        `<div class="message bot-message"><p>🎢 "Quels sont les meilleurs parcs à visiter ?" 🎡</p></div>`
+    ];
+
+    addMessageWithDelay(chatMessages, messages, 600);
 }
