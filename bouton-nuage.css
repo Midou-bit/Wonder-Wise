@@ -1,0 +1,148 @@
+.weather-button {
+    position: fixed;
+    left: 20px;
+    top: 20px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--background-gradient);
+    border: none;
+    box-shadow: 0 4px 12px rgba(10, 147, 150, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.weather-button::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 70%);
+    transform: rotate(45deg);
+    transition: all 0.3s ease;
+}
+
+.weather-button i {
+    color: var(--background-color);
+    font-size: 24px;
+    position: relative;
+    z-index: 2;
+}
+
+.weather-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 15px rgba(10, 147, 150, 0.4);
+}
+
+.weather-button:hover::before {
+    top: -25%;
+    left: -25%;
+}
+
+@keyframes floatWeather {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+.weather-button:hover {
+    animation: floatWeather 2s ease-in-out infinite;
+}
+
+.weather-chatbot {
+    position: fixed;
+    left: 100px;
+    top: 20px;
+    width: 320px;
+    background: var(--glass-effect);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(64, 224, 208, 0.2);
+    backdrop-filter: blur(10px);
+    display: none;
+    z-index: 1001;
+    overflow: hidden;
+}
+
+.weather-chatbot-header {
+    background: var(--background-gradient);
+    color: var(--background-color);
+    padding: 15px;
+    border-radius: 20px 20px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.weather-chatbot-header h3 {
+    margin: 0;
+    font-size: 1.2em;
+    font-weight: 600;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    color: var(--background-color);
+    font-size: 24px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.close-button:hover {
+    transform: rotate(90deg);
+}
+
+.weather-chatbot-content {
+    padding: 20px;
+}
+
+.weather-chatbot-content p {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+}
+
+.weather-input-container {
+    display: flex;
+    align-items: center;
+}
+
+#weather-input {
+    flex-grow: 1;
+    padding: 10px;
+    border: 2px solid var(--tertiary-color);
+    border-radius: 10px 0 0 10px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+#weather-input:focus {
+    border-color: var(--secondary-color);
+    outline: none;
+}
+
+#weather-submit {
+    background: var(--accent-color);
+    color: var(--background-color);
+    border: none;
+    padding: 12px 15px;
+    border-radius: 0 10px 10px 0;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+#weather-submit:hover {
+    background: var(--primary-color);
+}
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: translateY(-10px); }
+    10%, 90% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(10px); }
+}
+
+.fade-message {
+    animation: fadeInOut 5s ease-in-out infinite;
+}

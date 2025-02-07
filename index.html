@@ -1,12 +1,73 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>WanderWise - Explorez le monde intelligemment</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="bouton-nuage.css">
 </head>
 <body>
+    <div id="background-slideshow"></div>
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+    
+    <header class="hero">
+        <h1 class="hero-title">
+            <span class="wander">Wander</span><span class="wise">Wise</span>
+        </h1>
+        <p class="hero-subtitle">Votre assistant de voyage intelligent</p>
+    </header>
+
+    <div class="chatbot-container">
+        <div class="chatbot-interface">
+            <div class="chat-header">
+                <div class="chat-icon">
+                    <i class="fas fa-plane-departure"></i>
+                </div>
+                <div class="chat-greeting">
+                    <h3>Prêt à explorer ?</h3>
+                    <p>Où souhaites-tu voyager aujourd'hui ?</p>
+                </div>
+            </div>
+            <div class="chat-search">
+                <input type="text" value="Quels sont les lieux touristiques en France ?" id="destinationInput" placeholder="Où voulez-vous aller ?" class="search-input">
+                <button id="searchButton" class="search-button">
+                    <i class="fas fa-search-location"></i>
+                </button>
+            </div>
+            <div id="chatMessages" class="chat-messages"></div>
+        </div>
+        
+        <div class="chatbot-trigger">
+            <i class="fas fa-compass"></i>
+        </div>
+    </div>
+
+    <button id="weather-button" class="weather-button">
+        <i class="fas fa-cloud-sun"></i>
+    </button>
+
+    <div id="weather-chatbot" class="weather-chatbot">
+        <div class="weather-chatbot-header">
+            <h3>Météo</h3>
+            <button class="close-button">&times;</button>
+        </div>
+        <div class="weather-chatbot-content">
+            <p id="weather-message" class="fade-message"></p>
+            <div class="weather-input-container">
+                <input type="text" id="weather-input" placeholder="Entrez un pays">
+                <button id="weather-submit">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
+    <script src="openStripMap.js"></script>
 </body>
 </html>
