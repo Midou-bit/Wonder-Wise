@@ -27,6 +27,9 @@ function handleUserMessage(message) {
 
     let location = extractLocation(message);
     if (location) {
+        if(chatMessages.innerHTML){
+            chatMessages.innerHTML = "";
+        }
         chatMessages.innerHTML += `<div class="message bot-message"><p>🔍 Je cherche des activités à <strong>${location}</strong>...</p></div>`;
         getOSMActivities(location).then(activities => {
             activities.length > 0 ? displayActivities(activities) : suggestQuestions(location);
@@ -79,6 +82,9 @@ function formatActivityType(type) {
 
 function displayActivities(activities) {
     const chatMessages = document.getElementById('chatMessages');
+    if(chatMessages){
+        chatMessages.innerHTML = "";
+    }
     chatMessages.innerHTML += `<div class="message bot-message"><p>🌍 Voici des activités :</p></div>` + 
         activities.map(a => `
             <div class="message bot-message" style="background: #e0f7fa; padding: 10px; border-radius: 10px; margin-bottom: 10px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
@@ -104,6 +110,9 @@ function suggestQuestions(location) {
 
 
 function suggestGeneralQuestions() {
+    if(document.getElementById('chatMessages').innerHTML){
+        document.getElementById('chatMessages').innerHTML = "";
+    }
     document.getElementById('chatMessages').innerHTML += `
         <div class="message bot-message">
             <p>🤔 Je ne peux répondre qu'aux questions sur les activités touristiques. Essaye :</p>
