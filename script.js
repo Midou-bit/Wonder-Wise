@@ -1,14 +1,15 @@
-// script.js
 const apiKey = '48685015-6081aca7eb1cbdbbed2ea6620';
 const slideshow = document.getElementById('background-slideshow');
 let currentImageIndex = 0;
 
+// Fonction pour charger les images d'arrière-plan
 async function loadImages() {
     const response = await fetch(`https://pixabay.com/api/?key=${apiKey}&q=landscape&image_type=photo&per_page=10`);
     const data = await response.json();
     return data.hits.map(img => img.largeImageURL);
 }
 
+// Fonction pour démarrer le diaporama d'images en arrière-plan
 async function startSlideshow() {
     const imageUrls = await loadImages();
     
@@ -34,14 +35,18 @@ async function startSlideshow() {
 document.addEventListener('DOMContentLoaded', () => {
     const chatbotTrigger = document.querySelector('.chatbot-trigger');
     const chatbotInterface = document.querySelector('.chatbot-interface');
-    let isOpen = false;
+    let isOpen = true; // Le chatbot s'affiche par défaut
+
+    // Afficher le chatbot dès le chargement de la page avec un fondu plus doux
+    setTimeout(() => {
+        chatbotInterface.classList.add('active');
+        chatbotTrigger.classList.add('active'); // Change l'apparence du bouton
+    }, 700); // Délai légèrement augmenté pour plus de fluidité
 
     chatbotTrigger.addEventListener('click', () => {
         isOpen = !isOpen;
-        chatbotInterface.classList.toggle('active');
-        chatbotTrigger.style.transform = isOpen ? 
-            'scale(1.1) rotate(135deg)' : 
-            'scale(1) rotate(0deg)';
+        chatbotInterface.classList.toggle('active', isOpen);
+        chatbotTrigger.classList.toggle('active', isOpen);
     });
 
     document.querySelectorAll('.blob').forEach(blob => {
@@ -50,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     startSlideshow();
 
-    // Ajout du message de bienvenue
+    // Ajout du message de bienvenue dans le chatbot
     const chatMessages = document.getElementById('chatMessages');
     chatMessages.innerHTML = `
         <div class="message bot-message">

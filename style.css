@@ -128,21 +128,57 @@ body {
     z-index: 2;
 }
 
+/* Animation douce du chatbot */
 .chatbot-interface {
     width: 350px;
     background: var(--glass-effect);
     border-radius: 20px;
     box-shadow: 0 8px 32px rgba(64, 224, 208, 0.2);
     backdrop-filter: blur(10px);
-    transform: translateY(100%);
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
     opacity: 0;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateY(50px) scale(0.8);
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease-out;
+    pointer-events: none; /* Empêche l'interaction quand il est caché */
 }
 
-.chatbot-interface.active {
-    transform: translateY(0);
-    opacity: 1;
+/* Animation douce du chatbot */
+.chatbot-interface {
+    width: 350px;
+    background: var(--glass-effect);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(64, 224, 208, 0.2);
+    backdrop-filter: blur(10px);
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    opacity: 0;
+    transform: translateY(50px) scale(0.85);
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), 
+                opacity 0.7s ease-in-out;
+    pointer-events: none; /* Empêche l'interaction quand il est caché */
 }
+
+/* État actif : effet plus fondu et fluide */
+.chatbot-interface.active {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto; /* Active les interactions */
+}
+
+/* Animation plus douce du bouton boussole */
+.chatbot-trigger {
+    transition: transform 0.4s ease-in-out, background 0.4s ease-in-out;
+}
+
+.chatbot-trigger.active {
+    transform: scale(1.1) rotate(135deg);
+    background: var(--accent-color);
+}
+
+
 
 .chat-header {
     display: flex;
