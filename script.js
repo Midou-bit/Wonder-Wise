@@ -1,12 +1,12 @@
 // script.js
-const apiKey = '7nZykbNhCkkTYJGLZLWPYFZVrOM4gdQBm5hb3Fpar2U';
+const apiKey = '48685015-6081aca7eb1cbdbbed2ea6620';
 const slideshow = document.getElementById('background-slideshow');
 let currentImageIndex = 0;
 
 async function loadImages() {
-    const response = await fetch(`https://api.unsplash.com/photos/random?count=10&query=landscape,travel&client_id=${apiKey}`);
-    const images = await response.json();
-    return images.map(img => img.urls.regular);
+    const response = await fetch(`https://pixabay.com/api/?key=${apiKey}&q=landscape&image_type=photo&per_page=10`);
+    const data = await response.json();
+    return data.hits.map(img => img.largeImageURL);
 }
 
 async function startSlideshow() {
@@ -28,7 +28,7 @@ async function startSlideshow() {
     }
 
     showNextImage();
-    setInterval(showNextImage, 10000); // Change d'image toutes les 10 secondes
+    setInterval(showNextImage, 10000);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -36,7 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatbotInterface = document.querySelector('.chatbot-interface');
     let isOpen = false;
 
-    // Animation du chatbot
     chatbotTrigger.addEventListener('click', () => {
         isOpen = !isOpen;
         chatbotInterface.classList.toggle('active');
@@ -45,11 +44,9 @@ document.addEventListener('DOMContentLoaded', () => {
             'scale(1) rotate(0deg)';
     });
 
-    // Animation des blobs
     document.querySelectorAll('.blob').forEach(blob => {
         blob.style.animationDelay = `${Math.random() * 20}s`;
     });
 
-    // Démarrage du diaporama
     startSlideshow();
 });
