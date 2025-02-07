@@ -49,4 +49,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     startSlideshow();
+
+    // Ajout du message de bienvenue
+    const chatMessages = document.getElementById('chatMessages');
+    chatMessages.innerHTML = `
+        <div class="message bot-message">
+            <p>Bonjour ! Je suis WanderWise, votre guide de voyage intelligent. 🌎</p>
+        </div>
+    `;
 });
