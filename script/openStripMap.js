@@ -1,6 +1,6 @@
 document.getElementById('searchButton').addEventListener('click', () => {
     const userInput = document.getElementById('destinationInput').value;
-    console.log("Message utilisateur reçu :", userInput);
+  
     handleUserMessage(userInput);
 });
 
@@ -24,7 +24,6 @@ function handleUserMessage(message) {
     chatMessages.innerHTML += `<div class="message user-message"><p>${message}</p></div>`;
 
     let pays = extractLocation(message);
-    console.log(pays);
     
     if (pays) {
         if(chatMessages.innerHTML){

@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WanderWise - Explorez le monde intelligemment</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./style/style.css">
+    <link rel="stylesheet" href="./style/bouton-nuage.css">
 </head>
 <body>
     <div id="background-slideshow"></div>
@@ -46,7 +47,30 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
-    <script src="openStripMap.js"></script>
+    <button id="weather-button" class="weather-button">
+        <i class="fas fa-cloud-sun"></i>
+    </button>
+
+    <div id="weather-chatbot" class="weather-chatbot">
+        <div class="weather-chatbot-header">
+            <h3>Météo</h3>
+            <button class="close-button">&times;</button>
+        </div>
+        <div class="weather-chatbot-content">
+            <p id="weather-message" class="fade-message"></p>
+            <div class="weather-input-container">
+                <input type="text" id="weather-input" placeholder="Entrez un pays ou une ville">
+                <button id="weather-submit">
+                    <i class="fas fa-search"></i>
+                </button>
+                
+            </div>
+            <div id="weatherResult"></div>
+        </div>
+    </div>
+
+    <script src="./script/script.js"></script>
+    <script src="./script/openStripMap.js"></script>
+    <script src="./script/meteoPays.js"></script>
 </body>
 </html>
